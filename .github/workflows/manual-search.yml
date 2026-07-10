@@ -8,7 +8,7 @@ on:
 jobs:
   research:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     permissions:
       contents: read
     steps:
@@ -17,13 +17,13 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install --disable-pip-version-check yt-dlp pillow requests
-      - name: Run direct HTML verification
-        run: python html_verify.py
+        run: pip install --disable-pip-version-check requests
+      - name: Run public endpoint metrics verification
+        run: python alt_metrics.py
       - name: Upload research output
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: manual-youtube-html-verification
-          path: html_verify_output
+          name: manual-youtube-alt-metrics
+          path: alt_metrics_output
           if-no-files-found: warn
