@@ -8,7 +8,7 @@ on:
 jobs:
   research:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     permissions:
       contents: read
     steps:
@@ -17,13 +17,13 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install --disable-pip-version-check requests
-      - name: Debug YouTube metadata
-        run: python debug_video_html.py
-      - name: Upload debug output
+        run: pip install --disable-pip-version-check yt-dlp pillow requests
+      - name: Run final exact Shorts verification
+        run: python final_verify.py
+      - name: Upload final verification
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-html-debug
-          path: debug_output
+          name: manual-youtube-final-verification
+          path: final_verify_output
           if-no-files-found: warn
