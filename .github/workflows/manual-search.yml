@@ -8,7 +8,7 @@ on:
 jobs:
   research:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
@@ -18,12 +18,12 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install --disable-pip-version-check requests
-      - name: Run public endpoint metrics verification
-        run: python alt_metrics.py
-      - name: Upload research output
+      - name: Debug YouTube metadata
+        run: python debug_video_html.py
+      - name: Upload debug output
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: manual-youtube-alt-metrics
-          path: alt_metrics_output
+          name: youtube-html-debug
+          path: debug_output
           if-no-files-found: warn
