@@ -1,0 +1,29 @@
+name: Manual YouTube channel research
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install --disable-pip-version-check yt-dlp pytubefix==10.10.0 pillow requests
+      - name: Run research
+        run: python search_channels.py
+      - name: Upload research output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: manual-youtube-research
+          path: research_output
+          if-no-files-found: warn
