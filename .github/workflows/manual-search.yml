@@ -17,13 +17,13 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install --disable-pip-version-check yt-dlp pillow requests
-      - name: Run focused research
-        run: python niche_search.py
+        run: pip install --disable-pip-version-check yt-dlp
+      - name: Run targeted verification
+        run: python target_enrich.py
       - name: Upload research output
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: manual-youtube-research-niche
-          path: niche_output
+          name: manual-youtube-target-verification
+          path: target_output
           if-no-files-found: warn
