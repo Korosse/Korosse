@@ -21,14 +21,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
-      - name: Test metadata mirrors
+          pip install yt-dlp requests pillow
+      - name: Inspect duration fields
         run: |
           mkdir -p debug_output
-          python tools/youtube_debug_mirrors.py | tee debug_output/mirrors.txt
+          python tools/youtube_debug_duration_fields.py > debug_output/duration_fields.txt
       - name: Upload diagnostic
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-mirror-diagnostic
+          name: youtube-duration-diagnostic
           path: debug_output/
           retention-days: 1
