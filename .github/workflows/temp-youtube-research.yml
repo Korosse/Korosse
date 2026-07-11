@@ -23,12 +23,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install yt-dlp requests pillow
       - name: Collect and qualify channels
-        run: python tools/youtube_channel_research_v2.py
+        run: python tools/youtube_targeted_recheck.py
       - name: Upload research artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-channel-research-v2
-          path: research_output_v2/
+          name: youtube-targeted-recheck
+          path: targeted_output/
           if-no-files-found: warn
           retention-days: 3
