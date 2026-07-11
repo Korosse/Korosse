@@ -1,4 +1,4 @@
-name: Temporary YouTube RSS verification
+name: Temporary YouTube broad discovery
 
 on:
   push:
@@ -12,27 +12,27 @@ permissions:
   contents: read
 
 jobs:
-  verify-rss:
+  discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install -U yt-dlp requests
-      - name: Verify current Shorts activity through RSS
+        run: pip install -U yt-dlp requests pillow
+      - name: Discover and verify channels
         working-directory: youtube_verify
         run: |
-          mkdir -p rss_output
-          python collect_rss.py > rss_output/run.log 2>&1 || true
-          cat rss_output/run.log
-      - name: Upload RSS evidence
+          mkdir -p discovery_output
+          python discover_channels.py > discovery_output/run.log 2>&1 || true
+          tail -200 discovery_output/run.log
+      - name: Upload discovery evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-rss-evidence
-          path: youtube_verify/rss_output
+          name: youtube-discovery-evidence
+          path: youtube_verify/discovery_output
           if-no-files-found: warn
           retention-days: 3
