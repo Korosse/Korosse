@@ -1,4 +1,4 @@
-name: Temporary slow Invidious verification
+name: Temporary YouTube discovery round 2
 
 on:
   push:
@@ -12,27 +12,27 @@ permissions:
   contents: read
 
 jobs:
-  verify:
+  discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install -U requests
-      - name: Verify channels sequentially
+        run: pip install -U yt-dlp requests pillow
+      - name: Run second-round discovery
         working-directory: youtube_verify
         run: |
-          mkdir -p inv44_slow_output
-          python inv44_slow.py > inv44_slow_output/run.log 2>&1 || true
-          tail -200 inv44_slow_output/run.log
-      - name: Upload verification evidence
+          mkdir -p round2_output
+          python discover_round2.py > round2_output/run.log 2>&1 || true
+          tail -250 round2_output/run.log
+      - name: Upload discovery evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-inv44-slow-evidence
-          path: youtube_verify/inv44_slow_output
+          name: youtube-round2-evidence
+          path: youtube_verify/round2_output
           if-no-files-found: warn
           retention-days: 3
