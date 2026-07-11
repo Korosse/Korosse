@@ -1,4 +1,4 @@
-name: Temporary YouTube broad discovery
+name: Temporary YouTube near-pass recheck
 
 on:
   push:
@@ -12,9 +12,9 @@ permissions:
   contents: read
 
 jobs:
-  discover:
+  recheck:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,17 +22,17 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install -U yt-dlp requests pillow
-      - name: Discover and verify channels
+      - name: Recheck publication dates and visual grids
         working-directory: youtube_verify
         run: |
-          mkdir -p discovery_output
-          python discover_channels.py > discovery_output/run.log 2>&1 || true
-          tail -200 discovery_output/run.log
-      - name: Upload discovery evidence
+          mkdir -p base44_output
+          python recheck_base44.py > base44_output/run.log 2>&1 || true
+          tail -200 base44_output/run.log
+      - name: Upload recheck evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-discovery-evidence
-          path: youtube_verify/discovery_output
+          name: youtube-base44-evidence
+          path: youtube_verify/base44_output
           if-no-files-found: warn
           retention-days: 3
