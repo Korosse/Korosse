@@ -19,12 +19,12 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install requests
-      - name: Export expansion IDs
-        run: python tools/youtube_export_expansion_ids.py
-      - name: Upload IDs artifact
+        run: pip install requests pillow yt-dlp
+      - name: Generate Sleduck grids
+        run: python tools/youtube_sleduck_grids.py
+      - name: Upload grids artifact
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-expansion-ids
-          path: expansion_ids_output/
+          name: youtube-sleduck-grids
+          path: sleduck_grids/
           retention-days: 3
