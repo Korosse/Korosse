@@ -1,4 +1,4 @@
-name: Temporary YouTube discovery round 2
+name: Temporary Invidious instance discovery
 
 on:
   push:
@@ -12,27 +12,27 @@ permissions:
   contents: read
 
 jobs:
-  discover:
+  find-instances:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install -U yt-dlp requests pillow
-      - name: Run second-round discovery
+        run: pip install -U requests
+      - name: Test public Invidious APIs
         working-directory: youtube_verify
         run: |
-          mkdir -p round2_output
-          python discover_round2.py > round2_output/run.log 2>&1 || true
-          tail -250 round2_output/run.log
-      - name: Upload discovery evidence
+          mkdir -p instance_output
+          python find_invidious_instances.py > instance_output/run.log 2>&1 || true
+          tail -250 instance_output/run.log
+      - name: Upload instance report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-round2-evidence
-          path: youtube_verify/round2_output
+          name: invidious-instance-report
+          path: youtube_verify/instance_output
           if-no-files-found: warn
           retention-days: 3
