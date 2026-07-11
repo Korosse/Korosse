@@ -12,19 +12,19 @@ jobs:
   collect:
     if: github.head_ref == 'temp-youtube-research-20260711' || github.ref_name == 'temp-youtube-research-20260711'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install requests
-      - name: Test YouTube HTML search
-        run: python tools/youtube_html_search_test.py
-      - name: Upload search test
+        run: pip install requests pillow
+      - name: Run mass YouTube HTML discovery
+        run: python tools/youtube_mass_html_discovery.py
+      - name: Upload mass discovery
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-html-search-test
-          path: html_search_test.json
+          name: youtube-mass-html-discovery
+          path: mass_html_discovery/
           retention-days: 3
