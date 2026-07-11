@@ -12,21 +12,19 @@ jobs:
   collect:
     if: github.head_ref == 'temp-youtube-research-20260711' || github.ref_name == 'temp-youtube-research-20260711'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests yt-dlp pillow
-      - name: Export page IDs
-        run: python tools/youtube_export_page_ids.py
+        run: pip install requests
+      - name: Export exact Shorts IDs
+        run: python tools/youtube_export_ids_fast.py
       - name: Upload IDs artifact
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-page-ids
-          path: page_ids_output/
+          name: youtube-fast-ids
+          path: fast_ids_output/
           retention-days: 3
