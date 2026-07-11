@@ -12,19 +12,19 @@ jobs:
   collect:
     if: github.head_ref == 'temp-youtube-research-20260711' || github.ref_name == 'temp-youtube-research-20260711'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install requests
-      - name: Export exact Shorts IDs
-        run: python tools/youtube_export_eligible_ids.py
-      - name: Upload IDs artifact
+        run: pip install requests pillow
+      - name: Generate candidate grids
+        run: python tools/youtube_make_candidate_grids.py
+      - name: Upload visual artifact
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-eligible-ids
-          path: eligible_ids_output/
+          name: youtube-candidate-grids
+          path: candidate_grids/
           retention-days: 3
