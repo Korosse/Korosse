@@ -12,19 +12,19 @@ jobs:
   collect:
     if: github.head_ref == 'temp-youtube-research-20260711' || github.ref_name == 'temp-youtube-research-20260711'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install requests pillow
-      - name: Run mass YouTube HTML discovery
-        run: python tools/youtube_mass_html_discovery.py
-      - name: Upload mass discovery
+        run: pip install requests
+      - name: Validate 58 channels
+        run: python tools/youtube_validate_58.py
+      - name: Upload validation
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-mass-html-discovery
-          path: mass_html_discovery/
+          name: youtube-validated-58
+          path: validated_58.json
           retention-days: 3
