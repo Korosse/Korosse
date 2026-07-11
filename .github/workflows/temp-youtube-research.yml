@@ -21,14 +21,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install yt-dlp requests pillow
-      - name: Diagnose alternate clients
+          pip install requests
+      - name: Test metadata mirrors
         run: |
           mkdir -p debug_output
-          python tools/youtube_debug_clients.py | tee debug_output/clients.txt
+          python tools/youtube_debug_mirrors.py | tee debug_output/mirrors.txt
       - name: Upload diagnostic
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-client-diagnostic
+          name: youtube-mirror-diagnostic
           path: debug_output/
           retention-days: 1
