@@ -1,0 +1,30 @@
+name: Temporary YouTube Channel Research
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    if: github.head_ref == 'temp-youtube-research-20260711' || github.ref_name == 'temp-youtube-research-20260711'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install requests
+      - name: Test watch metadata
+        run: python tools/youtube_watch_meta_test.py
+      - name: Upload watch test
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-watch-meta-test
+          path: watch_meta_test.json
+          retention-days: 3
