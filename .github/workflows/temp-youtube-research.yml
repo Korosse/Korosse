@@ -22,13 +22,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install yt-dlp requests pillow
-      - name: Diagnose YouTube responses
+      - name: Diagnose alternate clients
         run: |
           mkdir -p debug_output
-          python tools/youtube_debug_one.py | tee debug_output/diagnostic.txt
+          python tools/youtube_debug_clients.py | tee debug_output/clients.txt
       - name: Upload diagnostic
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-diagnostic
+          name: youtube-client-diagnostic
           path: debug_output/
           retention-days: 1
