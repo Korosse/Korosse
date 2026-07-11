@@ -12,7 +12,7 @@ jobs:
   collect:
     if: github.head_ref == 'temp-youtube-research-20260711' || github.ref_name == 'temp-youtube-research-20260711'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -22,13 +22,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install yt-dlp requests pillow
-      - name: Inspect duration fields
-        run: |
-          mkdir -p debug_output
-          python tools/youtube_debug_duration_fields.py > debug_output/duration_fields.txt
-      - name: Upload diagnostic
+      - name: Export Shorts IDs
+        run: python tools/youtube_export_short_ids.py
+      - name: Upload IDs artifact
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-duration-diagnostic
-          path: debug_output/
-          retention-days: 1
+          name: youtube-short-ids
+          path: short_ids_output/
+          retention-days: 3
