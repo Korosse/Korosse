@@ -1,0 +1,46 @@
+name: Temporary sharded RSS Shorts discovery
+
+on:
+  push:
+    branches:
+      - chatgpt-youtube-verify-20260711
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -U yt-dlp requests pillow
+      - name: Search and verify channels
+        working-directory: youtube_verify
+        env:
+          SHARD: ${{ matrix.shard }}
+          TOTAL_SHARDS: 8
+        run: |
+          python rss_discovery_shard.py > rss_discovery_shard_${{ matrix.shard }}.log 2>&1 || true
+          tail -250 rss_discovery_shard_${{ matrix.shard }}.log
+      - name: Upload shard evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-rss-discovery-${{ matrix.shard }}
+          path: |
+            youtube_verify/rss_discovery_output/shard_${{ matrix.shard }}
+            youtube_verify/rss_discovery_shard_${{ matrix.shard }}.log
+          if-no-files-found: warn
+          retention-days: 3
