@@ -1,4 +1,4 @@
-name: Temporary YouTube date verification
+name: Temporary YouTube RSS verification
 
 on:
   push:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  verify-dates:
+  verify-rss:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -22,18 +22,17 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install -U yt-dlp requests
-      - name: Verify current publication dates and contacts
+      - name: Verify current Shorts activity through RSS
         working-directory: youtube_verify
         run: |
-          mkdir -p dates_output
-          sed -i "s/data = json.loads(r.stdout) if r.stdout.strip() else {}/data = (json.loads(r.stdout) if r.stdout.strip() else {}) or {}/" collect_dates.py
-          python collect_dates.py > dates_output/run.log 2>&1 || true
-          cat dates_output/run.log
-      - name: Upload date evidence
+          mkdir -p rss_output
+          python collect_rss.py > rss_output/run.log 2>&1 || true
+          cat rss_output/run.log
+      - name: Upload RSS evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-date-evidence
-          path: youtube_verify/dates_output
+          name: youtube-rss-evidence
+          path: youtube_verify/rss_output
           if-no-files-found: warn
           retention-days: 3
