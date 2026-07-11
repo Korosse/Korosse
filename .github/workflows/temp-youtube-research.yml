@@ -23,4 +23,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install yt-dlp requests pillow
       - name: Diagnose YouTube responses
-        run: python tools/youtube_debug_one.py
+        run: |
+          mkdir -p debug_output
+          python tools/youtube_debug_one.py | tee debug_output/diagnostic.txt
+      - name: Upload diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-diagnostic
+          path: debug_output/
+          retention-days: 1
