@@ -21,10 +21,10 @@ jobs:
       - name: Install dependencies
         run: pip install requests
       - name: Export exact Shorts IDs
-        run: python tools/youtube_export_ids_fast.py
+        run: python tools/youtube_export_eligible_ids.py
       - name: Upload IDs artifact
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-fast-ids
-          path: fast_ids_output/
+          name: youtube-eligible-ids
+          path: eligible_ids_output/
           retention-days: 3
