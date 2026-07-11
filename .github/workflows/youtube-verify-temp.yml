@@ -1,4 +1,4 @@
-name: Temporary YouTube verification
+name: Temporary YouTube date verification
 
 on:
   push:
@@ -12,43 +12,24 @@ permissions:
   contents: read
 
 jobs:
-  collect:
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+  verify-dates:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install -U yt-dlp requests pillow
-      - name: Select shard
+        run: pip install -U yt-dlp requests
+      - name: Verify current publication dates and contacts
         working-directory: youtube_verify
-        env:
-          SHARD: ${{ matrix.shard }}
-        run: |
-          python - <<'PY'
-          import os
-          from pathlib import Path
-          p = Path('seeds.txt')
-          rows = [x for x in p.read_text().splitlines() if x.strip()]
-          shard = int(os.environ['SHARD'])
-          selected = rows[shard::8]
-          p.write_text('\n'.join(selected) + '\n')
-          print('shard', shard, 'channels', len(selected))
-          PY
-      - name: Collect channel evidence
-        working-directory: youtube_verify
-        run: python collect_seed.py
-      - name: Upload evidence
+        run: python collect_dates.py
+      - name: Upload date evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-seed-evidence-${{ matrix.shard }}
-          path: youtube_verify/output
+          name: youtube-date-evidence
+          path: youtube_verify/dates_output
           if-no-files-found: warn
           retention-days: 3
