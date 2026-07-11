@@ -1,0 +1,32 @@
+name: Temporary YouTube verification
+
+on:
+  push:
+    branches:
+      - chatgpt-youtube-verify-20260711
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -U yt-dlp requests pillow
+      - name: Collect channel evidence
+        working-directory: youtube_verify
+        run: python collect_seed.py
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-seed-evidence
+          path: youtube_verify/output
+          if-no-files-found: warn
+          retention-days: 3
