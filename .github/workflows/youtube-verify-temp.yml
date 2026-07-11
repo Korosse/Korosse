@@ -1,4 +1,4 @@
-name: Temporary YouTube HTML search-date probe
+name: Temporary YouTube channel HTML probe
 
 on:
   push:
@@ -22,17 +22,17 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install -U requests
-      - name: Probe YouTube HTML search cards
+      - name: Probe raw Shorts tab data
         working-directory: youtube_verify
         run: |
-          mkdir -p html_search_output
-          python html_search_date_probe.py > html_search_output/run.log 2>&1 || true
-          tail -250 html_search_output/run.log
+          mkdir -p channel_html_probe_output
+          python channel_html_probe.py > channel_html_probe_output/run.log 2>&1 || true
+          tail -250 channel_html_probe_output/run.log
       - name: Upload probe evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-html-search-date-probe
-          path: youtube_verify/html_search_output
+          name: youtube-channel-html-probe
+          path: youtube_verify/channel_html_probe_output
           if-no-files-found: warn
           retention-days: 3
