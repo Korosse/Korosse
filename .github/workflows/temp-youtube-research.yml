@@ -12,19 +12,19 @@ jobs:
   collect:
     if: github.head_ref == 'temp-youtube-research-20260711' || github.ref_name == 'temp-youtube-research-20260711'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install requests pillow yt-dlp
-      - name: Generate Sleduck grids
-        run: python tools/youtube_sleduck_grids.py
-      - name: Upload grids artifact
+        run: pip install requests pillow
+      - name: Generate final candidate grids
+        run: python tools/youtube_final_contact_grids.py
+      - name: Upload final candidate artifact
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-sleduck-grids
-          path: sleduck_grids/
+          name: youtube-final-candidate-grids
+          path: final_candidate_grids/
           retention-days: 3
