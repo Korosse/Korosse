@@ -1,0 +1,42 @@
+name: Persist Temporary YouTube Research
+
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - 'research_results/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    if: github.head_ref == 'temp-youtube-research-20260711' || github.ref_name == 'temp-youtube-research-20260711'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: temp-youtube-research-20260711
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install yt-dlp requests pillow
+      - name: Run broad discovery and contact verification
+        run: |
+          rm -rf broad_split_discovery contact_verification research_results/latest
+          python tools/youtube_broad_split_discovery.py
+          python tools/contact_type_verifier.py
+          mkdir -p research_results/latest
+          cp -R broad_split_discovery research_results/latest/
+          cp -R contact_verification research_results/latest/
+      - name: Commit isolated results
+        run: |
+          git config user.name 'youtube-research-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add research_results/latest
+          git commit -m '[results] Persist temporary YouTube research outputs' || exit 0
+          git push origin HEAD:temp-youtube-research-20260711
