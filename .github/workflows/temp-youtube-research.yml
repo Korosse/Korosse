@@ -12,19 +12,19 @@ jobs:
   collect:
     if: github.head_ref == 'temp-youtube-research-20260711' || github.ref_name == 'temp-youtube-research-20260711'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install requests pillow
-      - name: Generate final candidate grids
-        run: python tools/youtube_final_contact_grids.py
-      - name: Upload final candidate artifact
+        run: pip install requests
+      - name: Test YouTube HTML search
+        run: python tools/youtube_html_search_test.py
+      - name: Upload search test
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-final-candidate-grids
-          path: final_candidate_grids/
+          name: youtube-html-search-test
+          path: html_search_test.json
           retention-days: 3
