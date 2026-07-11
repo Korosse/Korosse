@@ -63,7 +63,7 @@ def fetch_channel(cid):
     decoded=raw.replace('\\u0026','&').replace('\\/','/')
     for pat in (TG,VK):
         for link in pat.findall(decoded):
-            link=link.rstrip('.,;\"\'')]}')
+            link=link.rstrip(".,;\"')]} ")
             if personal(link) and link not in contacts: contacts.append(link)
     for user in AT.findall(decoded):
         link=f'https://t.me/{user}'
